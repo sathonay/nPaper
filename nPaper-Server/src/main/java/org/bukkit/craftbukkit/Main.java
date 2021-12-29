@@ -15,12 +15,21 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.MinecraftServer;
 
+import org.apache.commons.lang3.JavaVersion;
+import org.apache.commons.lang3.SystemUtils;
+import org.fusesource.jansi.AnsiConsole;
+
 public class Main {
     public static boolean useJline = true;
     public static boolean useConsole = true;
 
-    public static void main(String[] args) throws IOException {
-        // Todo: Installation script
+    public static void main(String[] args) {
+        if(!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8)) {
+            System.err.println("nPaper requires Java 8 or higher.");
+            System.err.println("Shutting down");
+            System.exit(1);
+        }
+        
         OptionParser parser = new OptionParser() {
             {
                 acceptsAll(asList("?", "help"), "Show the help");
