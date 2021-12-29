@@ -15,10 +15,6 @@ import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import net.minecraft.server.MinecraftServer;
 
-import org.apache.commons.lang3.JavaVersion;
-import org.apache.commons.lang3.SystemUtils;
-import org.fusesource.jansi.AnsiConsole;
-
 public class Main {
     public static boolean useJline = true;
     public static boolean useConsole = true;
