@@ -19,13 +19,8 @@ public class Main {
     public static boolean useJline = true;
     public static boolean useConsole = true;
 
-    public static void main(String[] args) {
-        if(!SystemUtils.isJavaVersionAtLeast(JavaVersion.JAVA_1_8)) {
-            System.err.println("nPaper requires Java 8 or higher.");
-            System.err.println("Shutting down");
-            System.exit(1);
-        }
-        
+    public static void main(String[] args) throws IOException {
+     
         OptionParser parser = new OptionParser() {
             {
                 acceptsAll(asList("?", "help"), "Show the help");
