@@ -1,5 +1,5 @@
 # nPaper
-<p align="center">
+<p align="center"> lol i was joking imma delete this repo
 A fork of Paper 1.7 with changes (optimizations & features).
   <br>
   <a href="https://app.travis-ci.com/github/sathonay/nPaper">

@@ -20,7 +20,7 @@ public class Main {
     public static boolean useConsole = true;
 
     public static void main(String[] args) throws IOException {
-        // Todo: Installation script
+     
         OptionParser parser = new OptionParser() {
             {
                 acceptsAll(asList("?", "help"), "Show the help");
