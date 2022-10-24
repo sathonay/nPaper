@@ -233,8 +233,8 @@ public class PlayerConnection implements PacketPlayInListener {
                 to.setPitch(packetplayinflying.pitch);
             }
 
-            if (this.checkMovement && !this.player.dead) {
-                // Prevent 40 event-calls for less than a single pixel of movement >.>
+            if (this.checkMovement && !this.player.dead) { // Rinny - Dont double check
+            	// Prevent 40 event-calls for less than a single pixel of movement >.>
                 double delta = Math.pow(this.lastPosX - to.getX(), 2) + Math.pow(this.lastPosY - to.getY(), 2) + Math.pow(this.lastPosZ - to.getZ(), 2);
                 float deltaAngle = Math.abs(this.lastYaw - to.getYaw()) + Math.abs(this.lastPitch - to.getPitch());
 
@@ -278,9 +278,6 @@ public class PlayerConnection implements PacketPlayInListener {
                         }
                     }
                 }
-            }
-
-            if (this.checkMovement && !this.player.dead) {
                 // CraftBukkit end
                 double d1;
                 double d2;
@@ -381,7 +378,7 @@ public class PlayerConnection implements PacketPlayInListener {
                 double d10 = d7 * d7 + d8 * d8 + d9 * d9;
 
                 // Spigot: make "moved too quickly" limit configurable
-                if (d10 > org.spigotmc.SpigotConfig.movedTooQuicklyThreshold && this.checkMovement && (!this.minecraftServer.N() || !this.minecraftServer.M().equals(this.player.getName()))) { // CraftBukkit - Added this.checkMovement condition to solve this check being triggered by teleports
+                if (d10 > org.spigotmc.SpigotConfig.movedTooQuicklyThreshold && this.checkMovement && this.player.onGround && (!this.minecraftServer.N() || !this.minecraftServer.M().equals(this.player.getName()))) { // Rinny - check if the player is on ground
                     c.warn(this.player.getName() + " moved too quickly! " + d4 + "," + d5 + "," + d6 + " (" + d7 + ", " + d8 + ", " + d9 + ")");
                     this.a(this.y, this.z, this.q, this.player.yaw, this.player.pitch);
                     return;
@@ -410,7 +407,7 @@ public class PlayerConnection implements PacketPlayInListener {
                 boolean flag1 = false;
 
                 // Spigot: make "moved wrongly" limit configurable
-                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isSleeping() && !this.player.playerInteractManager.isCreative()) {
+                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold && this.player.onGround && !this.player.isSleeping() && !this.player.playerInteractManager.isCreative()) { // Rinny - check if the player is on ground
                     flag1 = true;
                     c.warn(this.player.getName() + " moved wrongly!");
                 }
@@ -425,7 +422,7 @@ public class PlayerConnection implements PacketPlayInListener {
 
                 AxisAlignedBB axisalignedbb = this.player.boundingBox.clone().grow((double) f4, (double) f4, (double) f4).a(0.0D, -0.55D, 0.0D);
 
-                if (!this.minecraftServer.getAllowFlight() && !this.player.abilities.canFly && !worldserver.c(axisalignedbb)) { // CraftBukkit - check abilities instead of creative mode
+                if (!this.minecraftServer.getAllowFlight() && !this.player.onGround && !this.player.abilities.canFly && !worldserver.c(axisalignedbb)) { // Rinny - dont check if the player is not on ground
                     if (d11 >= -0.03125D) {
                         ++this.f;
                         if (this.f > 80) {
@@ -462,14 +459,11 @@ public class PlayerConnection implements PacketPlayInListener {
     }
 
     public void teleport(Location dest) {
-        double d0, d1, d2;
-        float f, f1;
-
-        d0 = dest.getX();
-        d1 = dest.getY();
-        d2 = dest.getZ();
-        f = dest.getYaw();
-        f1 = dest.getPitch();
+        final double d0 = dest.getX(); // Rinny - directly init variable
+        final double d1 = dest.getY();
+        final double d2 = dest.getZ();
+        float f = dest.getYaw();
+        float f1 = dest.getPitch();
 
         // TODO: make sure this is the best way to address this.
         if (Float.isNaN(f)) {
@@ -525,15 +519,7 @@ public class PlayerConnection implements PacketPlayInListener {
         } else {
             boolean flag = false;
 
-            if (packetplayinblockdig.g() == 0) {
-                flag = true;
-            }
-
-            if (packetplayinblockdig.g() == 1) {
-                flag = true;
-            }
-
-            if (packetplayinblockdig.g() == 2) {
+            if (packetplayinblockdig.g() == 0 || packetplayinblockdig.g() == 1 || packetplayinblockdig.g() == 2) { 
                 flag = true;
             }
 
@@ -757,6 +743,9 @@ public class PlayerConnection implements PacketPlayInListener {
     }
 
     public void sendPacket(Packet packet) {
+    	if (packet == null || this.processedDisconnect) {
+            return;
+    	}
         // Spigot start - protocol patch
         if ( NetworkManager.a( networkManager ).attr( NetworkManager.protocolVersion ).get() >= 17 )
         {
@@ -800,10 +789,7 @@ public class PlayerConnection implements PacketPlayInListener {
             }
         }
 
-        // CraftBukkit start
-        if (packet == null) {
-            return;
-        } else if (packet instanceof PacketPlayOutSpawnPosition) {
+        if (packet instanceof PacketPlayOutSpawnPosition) {
             PacketPlayOutSpawnPosition packet6 = (PacketPlayOutSpawnPosition) packet;
             this.player.compassTarget = new Location(this.getPlayer().getWorld(), packet6.x, packet6.y, packet6.z);
         }
