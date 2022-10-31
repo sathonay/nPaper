@@ -190,7 +190,7 @@ import com.avaje.ebean.config.ServerConfig;
 import com.avaje.ebean.config.dbplatform.SQLitePlatform;
 import com.avaje.ebeaninternal.server.lib.sql.TransactionIsolation;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.MapMaker;
+import com.google.common.cache.CacheBuilder;
 
 import jline.console.ConsoleReader;
 
