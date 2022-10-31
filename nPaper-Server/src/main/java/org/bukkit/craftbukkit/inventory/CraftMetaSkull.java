@@ -64,7 +64,7 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
                 public void run()
                 {
 
-                    final GameProfile profile = net.minecraft.server.TileEntitySkull.skinCache.getUnchecked( CraftMetaSkull.this.profile.getName().toLowerCase() );
+                    final GameProfile profile = net.minecraft.server.TileEntitySkull.skinCache.getIfPresent( CraftMetaSkull.this.profile.getName().toLowerCase() );
                     if ( profile != null )
                     {
                         MinecraftServer.getServer().processQueue.add( new Runnable()
