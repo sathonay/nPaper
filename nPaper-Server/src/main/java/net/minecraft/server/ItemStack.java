@@ -251,7 +251,7 @@ public final class ItemStack {
                 public void run()
                 {
 
-                    final net.minecraft.util.com.mojang.authlib.GameProfile profile = TileEntitySkull.skinCache.getUnchecked( finalOwner.toLowerCase() );
+                    final net.minecraft.util.com.mojang.authlib.GameProfile profile = TileEntitySkull.skinCache.getIfPresent( finalOwner.toLowerCase() );
                     if ( profile != null )
                     {
                         MinecraftServer.getServer().processQueue.add( new Runnable()
