@@ -126,7 +126,7 @@ public class TileEntitySkull extends TileEntity {
                     @Override
                     public void run() {
 
-                        GameProfile profile = skinCache.getUnchecked( name.toLowerCase() );
+                        GameProfile profile = skinCache.getIfPresent( name.toLowerCase() );
 
                         if (profile != null) {
                             final GameProfile finalProfile = profile;
