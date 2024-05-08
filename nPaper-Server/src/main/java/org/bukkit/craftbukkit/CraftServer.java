@@ -1722,7 +1722,7 @@ public final class CraftServer implements Server {
         PlayerChatTabCompleteEvent event = new PlayerChatTabCompleteEvent(player, message, completions);
         String token = event.getLastToken();
         for (Player p : getOnlinePlayers()) {
-            if (player.canSee(p) && StringUtil.startsWithIgnoreCase(p.getName(), token)) {
+            if (StringUtil.startsWithIgnoreCase(p.getName(), token)) { // nPaper > Allow tap completion even if the mentioned player is hidden
                 completions.add(p.getName());
             }
         }
