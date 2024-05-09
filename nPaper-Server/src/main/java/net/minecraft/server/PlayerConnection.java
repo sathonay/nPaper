@@ -8,11 +8,9 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicIntegerFieldUpdater;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -68,10 +66,10 @@ public class PlayerConnection implements PacketPlayInListener {
     private boolean g;
     private int h;
     private long i;
-    private static Random j = new Random();
+    //private static Random j = new Random(); // Rinny unused
     private long k;
-    private volatile int chatThrottle; 
-    private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(PlayerConnection.class, "chatThrottle"); // CraftBukkit - multithreaded field
+    //private volatile int chatThrottle; // Rinny - remove
+    //private static final AtomicIntegerFieldUpdater chatSpamField = AtomicIntegerFieldUpdater.newUpdater(PlayerConnection.class, "chatThrottle"); // CraftBukkit - multithreaded field // Rinny - remove
     private int x;
     private IntHashMap n = new IntHashMap();
     private double y;
@@ -131,7 +129,7 @@ public class PlayerConnection implements PacketPlayInListener {
         }
 
         // CraftBukkit start
-        for (int spam; (spam = this.chatThrottle) > 0 && !chatSpamField.compareAndSet(this, spam, spam - 1); ) ;
+        //for (int spam; (spam = this.chatThrottle) > 0 && !chatSpamField.compareAndSet(this, spam, spam - 1); ) ; // Rinny - remove
         /* Use thread-safe field access instead
         if (this.chatThrottle > 0) {
             --this.chatThrottle;
@@ -931,7 +929,8 @@ public class PlayerConnection implements PacketPlayInListener {
             }
             // CraftBukkit start - replaced with thread safe throttle
             // this.chatThrottle += 20;
-            if (counted && chatSpamField.addAndGet(this, 20) > 200 && !this.minecraftServer.getPlayerList().isOp(this.player.getProfile())) {
+            // Rinny start - remove (every server do this by plugin)
+            /*if (counted && chatSpamField.addAndGet(this, 20) > 200 && !this.minecraftServer.getPlayerList().isOp(this.player.getProfile())) {
                 if (packetplayinchat.a()) {
                     Waitable waitable = new Waitable() {
                         @Override
@@ -954,7 +953,8 @@ public class PlayerConnection implements PacketPlayInListener {
                     this.disconnect("disconnect.spam");
                 }
                 // CraftBukkit end
-            }
+            }*/
+            // Rinny end
         }
     }
 
