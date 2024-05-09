@@ -1,12 +1,13 @@
 package net.minecraft.server;
 
 import java.io.IOException;
+
+import org.bukkit.craftbukkit.util.CraftChatMessage;
+
 // Spigot start - protocol patch
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
 import net.minecraft.util.com.mojang.authlib.properties.PropertyMap;
-import org.bukkit.craftbukkit.util.CraftChatMessage;
-import org.spigotmc.ValidateUtils;
 
 public class PacketPlayOutPlayerInfo extends Packet {
 
@@ -117,10 +118,6 @@ public class PacketPlayOutPlayerInfo extends Packet {
 
     public void handle(PacketListener packetlistener) {
         this.a((PacketPlayOutListener) packetlistener);
-    }
-    
-    public void fixUsername() { // Rinny - dont limit tablist name for 1.8 client
-    	this.username = ValidateUtils.limit(username, 16);
     }
 
     public enum PlayerInfo {

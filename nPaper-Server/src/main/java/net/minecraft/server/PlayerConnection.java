@@ -798,13 +798,6 @@ public class PlayerConnection implements PacketPlayInListener {
             this.player.compassTarget = new Location(this.getPlayer().getWorld(), packet6.x, packet6.y, packet6.z);
         }
         // CraftBukkit end
-        
-        // Rinny start - dont limit tablist name for 1.8 client
-        if (packet instanceof PacketPlayOutPlayerInfo && this.networkManager.getVersion() < 28) {
-        	final PacketPlayOutPlayerInfo info = (PacketPlayOutPlayerInfo) packet;
-        	info.fixUsername();
-        }
-        // Rinny stop
 
         try {
             this.networkManager.handle(packet, new GenericFutureListener[0]);
