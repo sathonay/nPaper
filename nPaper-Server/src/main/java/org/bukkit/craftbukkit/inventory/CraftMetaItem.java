@@ -6,12 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import net.minecraft.server.NBTBase;
 import net.minecraft.server.NBTTagCompound;
@@ -29,6 +24,7 @@ import org.bukkit.configuration.serialization.SerializableAs;
 import org.bukkit.craftbukkit.Overridden;
 import org.bukkit.craftbukkit.inventory.CraftMetaItem.ItemMetaKey.Specific;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.Repairable;
 
@@ -202,11 +198,14 @@ class CraftMetaItem implements ItemMeta, Repairable {
     @Specific(Specific.To.NBT)
     static final ItemMetaKey ATTRIBUTES_UUID_LOW = new ItemMetaKey("UUIDLeast");
     static final ItemMetaKey UNBREAKABLE = new ItemMetaKey("Unbreakable"); // Spigot
+    @Specific(Specific.To.NBT)
+    static final ItemMetaKey HIDEFLAGS = new ItemMetaKey("HideFlags", "ItemFlags"); // 1.8 paper
 
     private String displayName;
     private List<String> lore;
     private Map<Enchantment, Integer> enchantments;
     private int repairCost;
+    private int hideFlag;
     private final NBTTagList attributes;
 
     CraftMetaItem(CraftMetaItem meta) {
@@ -226,6 +225,7 @@ class CraftMetaItem implements ItemMeta, Repairable {
         }
 
         this.repairCost = meta.repairCost;
+        this.hideFlag = meta.hideFlag;
         this.attributes = meta.attributes;
         spigot.setUnbreakable( meta.spigot.isUnbreakable() ); // Spigot
     }
@@ -255,6 +255,9 @@ class CraftMetaItem implements ItemMeta, Repairable {
             repairCost = tag.getInt(REPAIR.NBT);
         }
 
+        if (tag.hasKey(HIDEFLAGS.NBT)) {
+            hideFlag = tag.getInt(HIDEFLAGS.NBT);
+        }
 
         if (tag.get(ATTRIBUTES.NBT) instanceof NBTTagList) {
             NBTTagList save = null;
@@ -465,6 +468,20 @@ class CraftMetaItem implements ItemMeta, Repairable {
             setRepairCost(repairCost);
         }
 
+        //itemflags (1.8)
+        Set hideFlags = SerializableMeta.getObject(Set.class, map, HIDEFLAGS.BUKKIT, true);
+        if (hideFlags != null) {
+            for (Object hideFlagObject : hideFlags) {
+                String hideFlagString = (String) hideFlagObject;
+                try {
+                    ItemFlag hideFlatEnum = ItemFlag.valueOf(hideFlagString);
+                    addItemFlags(hideFlatEnum);
+                } catch (IllegalArgumentException ex) {
+                    // Ignore when we got a old String which does not map to a Enum value anymore
+                }
+            }
+        }
+
         attributes = null;
         // Spigot start
         Boolean unbreakable = SerializableMeta.getObject( Boolean.class, map, UNBREAKABLE.BUKKIT, true );
@@ -501,6 +518,10 @@ class CraftMetaItem implements ItemMeta, Repairable {
 
         if (hasLore()) {
             setDisplayTag(itemTag, LORE.NBT, createStringList(lore));
+        }
+
+        if (hideFlag != 0) {
+            itemTag.setInt(HIDEFLAGS.NBT, hideFlag);
         }
 
         applyEnchantments(enchantments, itemTag, ENCHANTMENTS);
@@ -570,7 +591,7 @@ class CraftMetaItem implements ItemMeta, Repairable {
 
     @Overridden
     boolean isEmpty() {
-        return !(hasDisplayName() || hasEnchants() || hasLore() || hasAttributes() || hasRepairCost() || spigot.isUnbreakable()); // Spigot
+        return !(hasDisplayName() || hasEnchants() || hasLore() || hasAttributes() || hasRepairCost() || spigot.isUnbreakable() || hideFlag != 0); // Spigot
     }
 
     public String getDisplayName() {
@@ -694,7 +715,8 @@ class CraftMetaItem implements ItemMeta, Repairable {
                 && (this.hasEnchants() ? that.hasEnchants() && this.enchantments.equals(that.enchantments) : !that.hasEnchants())
                 && (this.hasLore() ? that.hasLore() && this.lore.equals(that.lore) : !that.hasLore())
                 && (this.hasAttributes() ? that.hasAttributes() && this.attributes.equals(that.attributes) : !that.hasAttributes())
-                && (this.hasRepairCost() ? that.hasRepairCost() && this.repairCost == that.repairCost : !that.hasRepairCost()) && this.spigot.isUnbreakable() == that.spigot.isUnbreakable(); // Spigot
+                && (this.hasRepairCost() ? that.hasRepairCost() && this.repairCost == that.repairCost : !that.hasRepairCost()) && this.spigot.isUnbreakable() == that.spigot.isUnbreakable() // Spigot
+                && (this.hideFlag == that.hideFlag); // itemflags 1.8
     }
 
     /**
@@ -721,6 +743,7 @@ class CraftMetaItem implements ItemMeta, Repairable {
         hash = 61 * hash + (hasAttributes() ? this.attributes.hashCode() : 0);
         hash = 61 * hash + (hasRepairCost() ? this.repairCost : 0);
         hash = 61 * hash + (spigot.isUnbreakable() ? 1231 : 1237); // Spigot
+        hash = 61 * hash + hideFlag; // itemflags 1.8
         return hash;
     }
 
@@ -735,10 +758,48 @@ class CraftMetaItem implements ItemMeta, Repairable {
             if (this.enchantments != null) {
                 clone.enchantments = new HashMap<Enchantment, Integer>(this.enchantments);
             }
+            clone.hideFlag = this.hideFlag; // itemflags 1.8
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new Error(e);
         }
+    }
+
+    @Override
+    public void addItemFlags(ItemFlag... hideFlags) {
+        for (ItemFlag f : hideFlags) {
+            this.hideFlag |= getBitModifier(f);
+        }
+    }
+
+    @Override
+    public void removeItemFlags(ItemFlag... hideFlags) {
+        for (ItemFlag f : hideFlags) {
+            this.hideFlag &= ~getBitModifier(f);
+        }
+    }
+
+    @Override
+    public Set<ItemFlag> getItemFlags() {
+        Set<ItemFlag> currentFlags = EnumSet.noneOf(ItemFlag.class);
+
+        for (ItemFlag f : ItemFlag.values()) {
+            if (hasItemFlag(f)) {
+                currentFlags.add(f);
+            }
+        }
+
+        return currentFlags;
+    }
+
+    @Override
+    public boolean hasItemFlag(ItemFlag flag) {
+        int bitModifier = getBitModifier(flag);
+        return (this.hideFlag & bitModifier) == bitModifier;
+    }
+
+    private byte getBitModifier(ItemFlag hideFlag) {
+        return (byte) (1 << hideFlag.ordinal());
     }
 
     public final Map<String, Object> serialize() {
@@ -762,6 +823,15 @@ class CraftMetaItem implements ItemMeta, Repairable {
 
         if (hasRepairCost()) {
             builder.put(REPAIR.BUKKIT, repairCost);
+        }
+
+        //itemflags 1.8
+        Set<String> hideFlags = new HashSet<String>();
+        for (ItemFlag hideFlagEnum : getItemFlags()) {
+            hideFlags.add(hideFlagEnum.name());
+        }
+        if (!hideFlags.isEmpty()) {
+            builder.put(HIDEFLAGS.BUKKIT, hideFlags);
         }
 
         // Spigot start
