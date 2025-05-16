@@ -223,53 +223,58 @@ public class PaperSpigotConfig
 
     public static boolean fixEnderPearlGlitch;
     private static void fixEnderPearlGlitch() {
-        fixEnderPearlGlitch = getBoolean("ender-pearl.fix-glitch", false);
+        fixEnderPearlGlitch = getBoolean("npaper.ender-pearl.fix-glitch", false);
     }
 
     public static boolean enderPearlCollision;
     private static void enderPearlCollision() {
-        enderPearlCollision = getBoolean("ender-pearl.hcf-collisions", false);
+        enderPearlCollision = getBoolean("npaper.ender-pearl.hcf-collisions", false);
     }
 
     public static boolean enderPearlCreativeThrow;
     private static void enderPearlCreativeThrow() {
-        enderPearlCreativeThrow = getBoolean("ender-pearl.creative-throw", false);
+        enderPearlCreativeThrow = getBoolean("npaper.ender-pearl.creative-throw", false);
     }
 
     public static boolean rodCatchPlayersAndItems;
     private static void rodCatchPlayersAndItems() {
-        rodCatchPlayersAndItems = getBoolean("rod-catch-players-and-items", false);
+        rodCatchPlayersAndItems = getBoolean("npaper.rod-catch-players-and-items", false);
     }
 
 
     public static float potionGravityVelocity;
     private static void potionGravityVelocity() {
-        potionGravityVelocity = getFloat("potion.gravity-velocity", 0.05F);
+        potionGravityVelocity = getFloat("npaper.potion.gravity-velocity", 0.05F);
     }
 
     public static float potionVelocity;
     private static void potionVelocity() {
-        potionVelocity = getFloat("potion.velocity", 0.5F);
+        potionVelocity = getFloat("npaper.potion.velocity", 0.5F);
     }
 
     public static float potionInaccuracy;
     private static void potionInaccuracy() {
-        potionInaccuracy = getFloat("potion.inaccuracy", -20.0F);
+        potionInaccuracy = getFloat("npaper.potion.inaccuracy", -20.0F);
     }
 
     // Print user ip in the console when he's joining the server
     public static boolean logPlayerIp;
     private static void logPlayerIp() {
-        logPlayerIp = getBoolean("log-player-ip", true);
+        logPlayerIp = getBoolean("npaper.log-player-ip", true);
     }
     
     public static boolean obfuscatePlayerHealth = false;
     private static void obfuscatePlayerHealth() {
-    	obfuscatePlayerHealth = getBoolean("settings.obfuscate-player-health", obfuscatePlayerHealth);
+    	obfuscatePlayerHealth = getBoolean("npaper.settings.obfuscate-player-health", obfuscatePlayerHealth);
     }
 
     public static boolean savePlayerData = true;
     private static void savePlayerData() {
-        savePlayerData = getBoolean("settings.save-player-data", savePlayerData);
+        savePlayerData = getBoolean("npaper.settings.save-player-data", savePlayerData);
+    }
+
+    public static boolean hitSprintDesync = true;
+    private static void hitSprintDesync() {
+        hitSprintDesync = getBoolean("npaper.settings.hitSprintDesync", hitSprintDesync);
     }
 }

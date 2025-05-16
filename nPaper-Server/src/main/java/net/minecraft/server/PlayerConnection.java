@@ -78,6 +78,11 @@ public class PlayerConnection implements PacketPlayInListener {
     private double q;
     public boolean checkMovement = true; // CraftBukkit - private -> public
     public boolean processedDisconnect; // CraftBukkit - added // nPaper private -> public
+    private boolean sprinting;
+
+    public boolean isSprinting() {
+        return sprinting;
+    }
 
     public PlayerConnection(MinecraftServer minecraftserver, NetworkManager networkmanager, EntityPlayer entityplayer) {
         this.minecraftServer = minecraftserver;
@@ -1055,7 +1060,8 @@ public class PlayerConnection implements PacketPlayInListener {
                 }
             }
             case 4, 5: {
-                PlayerToggleSprintEvent event = new PlayerToggleSprintEvent(this.getPlayer(), packetplayinentityaction.d() == 4);
+                sprinting = packetplayinentityaction.d() == 4;
+                PlayerToggleSprintEvent event = new PlayerToggleSprintEvent(this.getPlayer(), sprinting);
                 this.server.getPluginManager().callEvent(event);
 
                 if (event.isCancelled()) {

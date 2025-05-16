@@ -20,6 +20,7 @@ import org.bukkit.event.inventory.EquipmentSetEvent;
 import org.bukkit.event.player.*;
 // CraftBukkit end
 import org.bukkit.util.Vector;
+import org.github.paperspigot.PaperSpigotConfig;
 import org.spigotmc.ProtocolData; // Spigot - protocol patch
 
 public abstract class EntityHuman extends EntityLiving implements ICommandListener {
@@ -916,7 +917,10 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         if (entity.av()) {
             if (!entity.j(this)) {
                 float f = (float) this.getAttributeInstance(GenericAttributes.e).getValue();
-                int i = (this.isSprinting() ? 1 : 0);
+                int i = (this.isSprinting()
+                        || (PaperSpigotConfig.hitSprintDesync
+                            && this instanceof EntityPlayer player
+                            && player.playerConnection.isSprinting()) ? 1 : 0);
                 float f1 = 0.0F;
 
                 if (entity instanceof EntityLiving) {
@@ -958,7 +962,9 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
 
                     if (flag2) {
                         if (i > 0) {
-                        	entity.g((double) (-MathHelper.sin(this.yaw * 3.1415927F / 180.0F) * (float) i * world.paperSpigotConfig.knockbackSprintHorizontal), world.paperSpigotConfig.knockbackSprintVertical, (double) (MathHelper.cos(this.yaw * 3.1415927F / 180.0F) * (float) i * world.paperSpigotConfig.knockbackSprintHorizontal));
+                        	entity.g((double) (-MathHelper.sin(this.yaw * 3.1415927F / 180.0F) * (float) i * world.paperSpigotConfig.knockbackSprintHorizontal),
+                                    world.paperSpigotConfig.knockbackSprintVertical,
+                                    (double) (MathHelper.cos(this.yaw * 3.1415927F / 180.0F) * (float) i * world.paperSpigotConfig.knockbackSprintHorizontal));
                             this.motX *= 0.6D;
                             this.motZ *= 0.6D;
                             this.setSprinting(false);
