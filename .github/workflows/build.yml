@@ -8,9 +8,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up JDK 22
-      uses: actions/setup-java@v3
+      uses: actions/setup-java@v4
       with:
         java-version: '22'
         distribution: 'temurin'
@@ -18,7 +18,7 @@ jobs:
     - name: Build nPaper
       run: mvn clean install
     - name: Upload artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: nPaper
         path: ./nPaper-Server/target/npaper-1.7.10-R0.1-SNAPSHOT.jar
