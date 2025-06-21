@@ -126,7 +126,7 @@ public abstract class EntityHuman extends EntityLiving implements ICommandListen
         if (this.f != null) {
             ItemStack itemstack = this.inventory.getItemInHand();
 
-            if (itemstack == this.f && (this.f.getItem() instanceof ItemFood || this.f.getItem() instanceof ItemBow || this.f.getItem() instanceof ItemSword)) { // Rinny - don't trigger if no food or bow in hand
+            if (itemstack == this.f && (this.f.getItem() instanceof ItemPotion || this.f.getItem() instanceof ItemFood || this.f.getItem() instanceof ItemBow || this.f.getItem() instanceof ItemSword)) { // Rinny - don't trigger if no food or bow in hand
                 if (this.g <= 25 && this.g % 4 == 0) {
                     this.c(itemstack, 5);
                 }
