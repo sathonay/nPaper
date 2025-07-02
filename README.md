@@ -24,3 +24,4 @@ Retired Contributors
 ---------------------
 
 * [Noksio](https://github.com/iamnoksio) 
+* [sathonay](https://github.com/sathonay) <!-- all good things come to an end, see ya maybe -->
