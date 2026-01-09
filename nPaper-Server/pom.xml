@@ -27,7 +27,7 @@
   <repositories>
     <repository>
       <id>repobo-snap</id>
-      <url>https://repo.caseif.org/content/groups/public</url>
+      <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
   </repositories>
 
