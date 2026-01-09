@@ -26,7 +26,7 @@
 
   <repositories>
     <repository>
-      <id>repobo-snap</id>
+      <id>papermc-repo</id>
       <url>https://repo.papermc.io/repository/maven-public/</url>
     </repository>
   </repositories>
