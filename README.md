@@ -2,9 +2,16 @@
 <p align="center">
 A fork of Paper 1.7 with changes (optimizations, 1.8 client interaction, Hologram API & features).
   <br>
+  <!--
   <a href="https://app.travis-ci.com/github/sathonay/nPaper">
     <img src="https://img.shields.io/travis/com/sathonay/nPaper?style=flat-square&logo=travis&label=TravisCI">
   </a>
+  -->
+  <a href="https://github.com/sathonay/nPaper/actions/workflows/build.yml/">
+    <img src="https://github.com/sathonay/nPaper/actions/workflows/build.yml/badge.svg?branch=development&event=push">
+  </a>
+
+
   <a href="https://discord.gg/sjUdv7G9C8">
     <img src="https://img.shields.io/discord/772215646959960085.svg?style=flat-square&logo=discord&logoColor=fff&label=Discord&color=7389d8">
   </a>
