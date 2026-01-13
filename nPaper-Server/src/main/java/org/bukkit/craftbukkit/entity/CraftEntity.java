@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.BiFunction;
 
+import com.sathonay.npaper.utils.ICraftEntityWrapper;
 import net.minecraft.server.*;
 
 import org.bukkit.EntityEffect;
@@ -39,7 +40,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     private static final Map<Class<?>, BiFunction<CraftServer, Entity, CraftEntity>> entityMappings = new HashMap<>();
     static {
     	// Players
-        entityMappings.put(EntityPlayer.class, (srv, ent) -> new CraftPlayer(srv, (EntityPlayer) ent));
+        //entityMappings.put(EntityPlayer.class, (srv, ent) -> new CraftPlayer(srv, (EntityPlayer) ent));
         entityMappings.put(EntityHuman.class, (srv, ent) -> new CraftHumanEntity(srv, (EntityHuman) ent));
         
         // Animals
@@ -170,6 +171,10 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public static CraftEntity getEntity(CraftServer server, Entity entity) {
+
+        if (entity instanceof ICraftEntityWrapper wrapper)
+            return wrapper.toCraftEntity(server);
+
         final Class<?> entityClass = entity.getClass();
         final BiFunction<CraftServer, Entity, CraftEntity> mapper = entityMappings.get(entityClass);
         if (mapper != null) {

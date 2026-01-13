@@ -5,6 +5,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import com.sathonay.npaper.utils.EntitySpecificSpawnPacket;
+import com.sathonay.npaper.utils.ICraftEntityWrapper;
 import net.minecraft.util.com.google.common.collect.Sets;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.io.netty.buffer.Unpooled;
@@ -15,7 +16,9 @@ import org.apache.logging.log4j.Logger;
 // CraftBukkit start
 import org.bukkit.Bukkit;
 import org.bukkit.WeatherType;
+import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.entity.CraftEntity;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
@@ -25,7 +28,7 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 // CraftBukkit end
 import org.spigotmc.ProtocolData; // Spigot - protocol patch
 
-public class EntityPlayer extends EntityHuman implements ICrafting, EntitySpecificSpawnPacket {
+public class EntityPlayer extends EntityHuman implements ICrafting, EntitySpecificSpawnPacket, ICraftEntityWrapper {
 
     private static final Logger bL = LogManager.getLogger();
     public String locale = "en_US"; // Spigot
@@ -1199,6 +1202,11 @@ public class EntityPlayer extends EntityHuman implements ICrafting, EntitySpecif
     @Override
     public Packet createSpecificSpawnPacket() {
         return new PacketPlayOutNamedEntitySpawn(this);
+    }
+
+    @Override
+    public CraftEntity toCraftEntity(CraftServer server) {
+        return new CraftPlayer(server, this);
     }
     // CraftBukkit end
 }
