@@ -26,6 +26,27 @@ To build nPaper, the following will need to be installed and available from your
 * [Git](https://git-scm.com)
 * [Maven](https://maven.apache.org)
 
+### Maven
+
+
+```xml
+<repositories>
+    <repository>
+        <id>github-sathonay-nPaper</id>
+        <name>GitHub Packages</name>
+        <url>https://maven.pkg.github.com/sathonay/nPaper</url>
+    </repository>
+</repositories>
+
+<dependencies>
+    <dependency>
+        <groupId>com.sathonay.npaper</groupId>
+        <artifactId>npaper</artifactId>
+        <version>latest</version>
+    </dependency>
+</dependencies>
+```
+
 
 Retired Contributors
 ---------------------
