@@ -42,7 +42,7 @@ To build nPaper, the following will need to be installed and available from your
     <dependency>
         <groupId>com.sathonay.npaper</groupId>
         <artifactId>npaper</artifactId>
-        <version>latest</version>
+        <version>1.7.10-R0.1-SNAPSHOT</version>
     </dependency>
 </dependencies>
 ```
