@@ -1,3 +1,4 @@
+#!/bin/bash
 debug=false
 
 function help
